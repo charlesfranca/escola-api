@@ -76,7 +76,6 @@ namespace EscolaDeVoce.API.Controllers
             try{
                 var req = new Services.Message.UserAnswerRequest();
                 req.model = model;
-
                 _answerService.UserAnswer(req);
 
                 response.status = true;
