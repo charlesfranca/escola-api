@@ -32,10 +32,10 @@
         "Microsoft.AspNetCore.Identity": "1.1.0-preview1-final",
         "Swashbuckle": "6.0.0-beta902",
         "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2",
-        "EscolaDeVoce.Repository.EntityFramework": "2.2.3",
-        "EscolaDeVoce.Infrastructure": "2.1.0", 
-        "EscolaDeVoce.Model": "2.1.0",
-        "EscolaDeVoce.Services": "2.2.3",
+        "EscolaDeVoce.Repository.EntityFramework": "2.2.4",
+        "EscolaDeVoce.Infrastructure": "2.1.1", 
+        "EscolaDeVoce.Model": "2.1.1",
+        "EscolaDeVoce.Services": "2.2.4",
         // "EscolaDeVoce.Repository.EntityFramework": {
         //     "target": "project"
         // },

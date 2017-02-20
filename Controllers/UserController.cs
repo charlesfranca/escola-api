@@ -17,26 +17,24 @@ namespace EscolaDeVoce.API.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
-        public Infrastructure.ApiResponse<IList<Services.ViewModel.UserViewModel>> Get()
+        [HttpGet("{search?}")]
+        public Infrastructure.ApiResponse<IList<Services.ViewModel.UserViewModel>> GetUsers(string search)
         {
             try{
-                var data = _userService.GetUsers(new Services.Message.GetUsersRequest()).list;
+                var data = _userService.GetUsers(new Services.Message.GetUsersRequest(){search = search}).list;
                 return Infrastructure.ApiResponse<IList<Services.ViewModel.UserViewModel>>.CreateResponse(true, "", data);
             }catch(Infrastructure.BusinessRuleException bex){
                 return Infrastructure.ApiResponse<IList<Services.ViewModel.UserViewModel>>.CreateResponse(false, bex.Message, null, System.Net.HttpStatusCode.BadRequest, bex.BrokenRules);
-            }catch(Exception){
+            }catch(Exception ex){
                 return Infrastructure.ApiResponse<IList<Services.ViewModel.UserViewModel>>.CreateResponse(false, "Ocorreu um erro inesperado. Entre em contato com o nosso time de desenvolvimento.", null, System.Net.HttpStatusCode.InternalServerError);
             }
         }
 
-        [HttpGet("{id}")]
-        public Infrastructure.ApiResponse<Services.ViewModel.UserViewModel> Get(string id)
+        [HttpGet("detail/{id}")]
+        public Infrastructure.ApiResponse<Services.ViewModel.UserViewModel> Get(Guid id)
         {
             try{
-                Guid userid = Guid.Empty;
-                if(!Guid.TryParse(id, out userid))
-                    return Infrastructure.ApiResponse<Services.ViewModel.UserViewModel>.CreateResponse(false, "Usuário não encontrado", null, System.Net.HttpStatusCode.NotFound);
+                Guid userid = id;
 
                 Services.Message.GetUserRequest req = new Services.Message.GetUserRequest();
                 req.userid = userid;
@@ -113,6 +111,33 @@ namespace EscolaDeVoce.API.Controllers
                 response.status = true;
                 
                 response.data = response.status;
+                response.code = System.Net.HttpStatusCode.Created;
+            }catch(Infrastructure.BusinessRuleException bex){
+                response.status = true;
+                response.code = System.Net.HttpStatusCode.BadRequest;
+                response.brokenRules = bex.BrokenRules;
+                response.error_message = bex.Message;
+            }catch(Exception ex){
+                response.status = true;
+                response.code = System.Net.HttpStatusCode.InternalServerError;
+                response.error_message = "Ocorreu um erro inesperado. Entre em contato com o nosso time de desenvolvimento.";
+            }
+            return response;
+        }
+
+        [HttpPost("startCourse/{userid}/{courseid}")]
+        public Infrastructure.ApiResponse<bool> AddUserCourse(Guid userid, Guid courseid)
+        {
+            var response = new Infrastructure.ApiResponse<bool>();
+            try{
+                var req = new Services.Message.AddUserCourseRequest();
+                req.courseId = courseid;
+                req.userId= userid;
+
+                _userService.AddUserCourse(req);
+
+                response.status = true;
+                response.data = true;
                 response.code = System.Net.HttpStatusCode.Created;
             }catch(Infrastructure.BusinessRuleException bex){
                 response.status = true;
